@@ -1,0 +1,98 @@
+const express = require('express');
+const app = express();
+const https = require('https')
+var request = require('request');
+
+//Allow from all sources
+const cors = require('cors');
+
+app.use(cors());
+app.get('/api/api/getdata', function (req, res) {
+  //Call with option eg.
+  //{"sequential":1,"return":"display_name,geo_code_1,geo_code_2,postal_code,custom_47,custom_93,custom_34,custom_123","contact_type":"Organization","options":{"limit":10,"join":"address"},
+
+  let url='https://charterforcompassion.org/administrator/components/com_civicrm/civicrm/extern/rest.php?entity=Contact&action=get&json=' + 
+  req.query.options + '}&api_key=rglLlzLnzxxhyPddllSC5KNp&key=a5ed065d4b54fe8f8bd77b0fb3cc5aa2'
+
+  const request = https.request(url, (response) => {
+    let data = '';
+    response.on('data', (chunk) => {
+      data = data + chunk.toString();
+    });
+    
+    response.on('end', () => {
+      res.status(200).json(JSON.parse(data));
+      });
+    })
+    
+    request.on('error', (error) => {
+      console.log('An error', error);
+    });
+    
+    request.end()
+  })
+
+
+
+  app.post('/api/api/postdata', function (req,res){
+      // console.log(req.body)
+        //Call with option eg.
+    //{"sequential":1,"return":"display_name,geo_code_1,geo_code_2,postal_code,custom_47,custom_93,custom_34,custom_123","contact_type":"Organization","options":{"limit":10,"join":"address"},
+    let url='https://charterforcompassion.org/administrator/components/com_civicrm/civicrm/extern/rest.php?entity=Contact&action=create&json=' + 
+    req.query.options + '&api_key=rglLlzLnzxxhyPddllSC5KNp&key=a5ed065d4b54fe8f8bd77b0fb3cc5aa2'
+    console.log(url);
+    // const request = https.request(url, (response) => {
+    //   let data = '';
+    //   response.on('data', (chunk) => {
+    //     data = data + chunk.toString();
+    //   });
+      
+    //   response.on('end', () => {
+    //     res.status(200).json(JSON.parse(data));
+    //     });
+    //   })
+
+    //   console.log(response)
+      
+    //   request.on('error', (error) => {
+    //     console.log('An error', error);
+    //   });
+      
+    //   request.end()
+
+
+
+var options = {
+  'method': 'POST',
+  'url': url,
+};
+  
+    request(options, function (error, response) {
+      console.log(response);
+      if (error) throw new Error(error);
+      console.log(response.body);
+    });
+  })
+
+
+
+
+  app.put(async function (req, res) {
+    console.log(req.body)
+    
+    // do yor stuff
+  })  
+
+  app.delete(async function (req, res) {
+
+    // do yor stuff
+  })
+
+  var server = app.listen(1080, function () {
+   var host = server.address().address
+   var port = server.address().port
+   console.log("server listening on port 1080")
+})
+
+
+
